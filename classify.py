@@ -1,10 +1,12 @@
 import pandas as pd
 import numpy as np
+import operator
 def classify(trainset,testset,k):
     trainlabel=pd.DataFrame(trainset['class'])
-    testlabel=pd.DataFrame(testset['class'])
+    #testlabel=pd.DataFrame(testset['class'])
     trainfeatrue=trainset.drop('class',axis=1)
     testfeature=testset.drop('class',axis=1)
+    result=list()
     for i in list(testfeature.index):      
         diff=trainfeatrue-testfeature.ix[i]
         sqdiff=diff**2
@@ -17,9 +19,16 @@ def classify(trainset,testset,k):
         for i in range(k):
             indexlist[i]=sortofdis.idxmin()
             label=label.append(trainlabel.ix[sortofdis.idxmin()])
-            #a=label.get_value(sortofdis.idxmin())
-            #print a
+            #print label.ix[sortofdis.idxmin(),'class']
+            count[label.ix[sortofdis.idxmin(),'class']]=count.get(label.ix[sortofdis.idxmin(),'class'],0)+1
             sortofdis=sortofdis.drop(sortofdis.idxmin())
+        sortedcount=sorted(count.iteritems(),key=operator.itemgetter(1),reverse=True)
+        #return sortedcount[0][0]
+        #print sortedcount[0][0]
+        result.append(sortedcount[0][0])
+    #print result
+    return result
+    
 
             
             
